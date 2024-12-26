@@ -89,7 +89,7 @@ check_uglifyjs() {
 		warning_message "UglifyJS is not installed. Installing..."
 		npm install -g uglify-js
 		if [ $? -ne 0 ]; then
-			  handle_error "UglifyJS installation failed. Please check your npm configuration."
+			  	handle_error "UglifyJS installation failed. Please check your npm configuration."
 		fi
 		info_message "UglifyJS installed successfully."
 	else
@@ -152,45 +152,45 @@ minify_files() {
 
 # Function to prompt the user for choice
 choose_minifier() {
-  info_message "${CYAN}Choose your minifier:${BLANK_SPACE}"
-  PS3="Enter your choice (1 for JS, 2 for CSS): "
-  options=("JS (JavaScript)" "CSS (Stylesheets)")
-  select opt in "${options[@]}"; do
-    case $opt in
-      "JS (JavaScript)")
-        minify "js"
-        break
-        ;;
-      "CSS (Stylesheets)")
-        minify "css"
-        break
-        ;;
-      *) 
-        soft_error_message "Invalid choice. Please choose 1 for JS or 2 for CSS."
-        ;;
-    esac
-  done
+	info_message "${CYAN}Choose your minifier:${BLANK_SPACE}"
+	PS3="Enter your choice (1 for JS, 2 for CSS): "
+	options=("JS (JavaScript)" "CSS (Stylesheets)")
+	select opt in "${options[@]}"; do
+		case $opt in
+			"JS (JavaScript)")
+				minify "js"
+				break
+				;;
+			"CSS (Stylesheets)")
+				minify "css"
+				break
+				;;
+			*) 
+				soft_error_message "Invalid choice. Please choose 1 for JS or 2 for CSS."
+				;;
+		esac
+	done
 }
 
 check_tools() {
-  if [ "$1" == "js" ]; then
-	check_uglifyjs
-  fi
-  
-  if [ "$1" == "css" ]; then
-	check_cleancss
-  fi
+	if [ "$1" == "js" ]; then
+		check_uglifyjs
+	fi
+	
+	if [ "$1" == "css" ]; then
+		check_cleancss
+	fi
 }
 
 minify() {
-  check_directories
+	check_directories
 
-  check_nodejs
-  check_tools $1
-  
-  minify_files $1
+	check_nodejs
+	check_tools $1
+	
+	minify_files $1
 
-  read -p "Press any key to continue..."
+	read -p "Press any key to continue..."
 }
 
 choose_minifier

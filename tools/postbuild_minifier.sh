@@ -33,8 +33,7 @@ ROOT_DIR="$(cd "$(dirname "$0")" && cd .. && pwd)"
 source ${ROOT_DIR}/tools/functions.sh
 
 #!--- Your path to the JS file to minify ---!#
-# FILE_NAME="C://PATH/TO/JS/SCRIPT/script.js"
-FILE_NAME="D:/xampp/htdocs/travail/projets/minifier-tools/to_minify/test_1.js"
+FILE_NAME="C://PATH/TO/JS/SCRIPT/script.js"
 FILE_BASE=$(basename "$FILE_NAME")
 
 # File status check

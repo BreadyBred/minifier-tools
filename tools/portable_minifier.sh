@@ -30,62 +30,62 @@ source ${ROOT_DIR}/tools/functions.sh
 
 # Check if the provided file path exists
 check_file_exists() {
-    local path="$1"
-    if [ -f "$path" ]; then
-        return 0
-    else
-        return 1
-    fi
+	local path="$1"
+	if [ -f "$path" ]; then
+		return 0
+	else
+		return 1
+	fi
 }
 
 # Function to prompt the user for a file path
 prompt_file_path() {
-    warning_message "(/!\ The path needs to be in this format: 'C://'. 'C:\' will not be recognized. /!\)"
-    read -p "Enter the full path of the file you want to minify (Shift + Insert to paste a path): " file_path
-    if [ -n "$file_path" ]; then
-        FILE_NAME="$file_path"
-        FILE_BASE=$(basename "$FILE_NAME")
+	warning_message "(/!\ The path needs to be in this format: 'C://'. 'C:\' will not be recognized. /!\)"
+	read -p "Enter the full path of the file you want to minify (Shift + Insert to paste a path): " file_path
+	if [ -n "$file_path" ]; then
+		FILE_NAME="$file_path"
+		FILE_BASE=$(basename "$FILE_NAME")
 
-        if check_file_exists "$file_path"; then
-            detect_file_extension
-        else
-            handle_error "The file '$file_path' does not exist. Please provide a valid path."
-        fi
-    fi
+		if check_file_exists "$file_path"; then
+			detect_file_extension
+		else
+			handle_error "The file '$file_path' does not exist. Please provide a valid path."
+		fi
+	fi
 }
 
 # Get the file extension from the file path
 get_file_extension() {
-    local file_path="$1"
-    echo "${file_path##*.}" | tr '[:upper:]' '[:lower:]'
+	local file_path="$1"
+	echo "${file_path##*.}" | tr '[:upper:]' '[:lower:]'
 }
 
 # Minification process
 minify_file() {
-    check_nodejs
-    local file_type="$1"
+	check_nodejs
+	local file_type="$1"
 
-    if [ "$file_type" == "js" ]; then
-        check_uglifyjs
-        uglifyjs "$FILE_NAME" -o "$FILE_NAME" --compress --mangle || handle_error "Failed to minify JavaScript file."
-        success_message "'$FILE_BASE' minified successfully."
-    elif [ "$file_type" == "css" ]; then
-        check_cleancss
-        cleancss -o "$FILE_NAME" "$FILE_NAME" || handle_error "Failed to minify CSS file."
-        success_message "'$FILE_BASE' minified successfully."
-    else
-        handle_error "Unsupported file type: $file_type"
-    fi
+	if [ "$file_type" == "js" ]; then
+		check_uglifyjs
+		uglifyjs "$FILE_NAME" -o "$FILE_NAME" --compress --mangle || handle_error "Failed to minify JavaScript file."
+		success_message "'$FILE_BASE' minified successfully."
+	elif [ "$file_type" == "css" ]; then
+		check_cleancss
+		cleancss -o "$FILE_NAME" "$FILE_NAME" || handle_error "Failed to minify CSS file."
+		success_message "'$FILE_BASE' minified successfully."
+	else
+		handle_error "Unsupported file type: $file_type"
+	fi
 }
 
 # Detect file extension
 detect_file_extension() {
-    local file_extension
-    file_extension=$(get_file_extension "$FILE_NAME")
-    if [ -z "$file_extension" ]; then
-        handle_error "Could not detect file extension for '$FILE_BASE'."
-    fi
-    minify_file "$file_extension"
+	local file_extension
+	file_extension=$(get_file_extension "$FILE_NAME")
+	if [ -z "$file_extension" ]; then
+		handle_error "Could not detect file extension for '$FILE_BASE'."
+	fi
+	minify_file "$file_extension"
 }
 
 # Node.JS status check, install if not installed
@@ -120,7 +120,7 @@ check_uglifyjs() {
 		warning_message "UglifyJS is not installed. Installing..."
 		npm install -g uglify-js
 		if [ $? -ne 0 ]; then
-			  handle_error "UglifyJS installation failed. Please check your npm configuration."
+			  	handle_error "UglifyJS installation failed. Please check your npm configuration."
 		fi
 		info_message "UglifyJS installed successfully."
 	else
