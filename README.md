@@ -26,11 +26,35 @@ There are two ways to use Minifier Tools:
 
 *   The post-build minifier currently only works with JavaScript files.
 *   Standalone version will not overwrite existing files. Minified files will have a suffix of `-min.extension`.
-*   All scripts automatically check for and install necessary tools (NodeJS, CleanCSS, UglifyJS) if they're missing.
+*   All scripts automatically check for and install necessary tools (NodeJS, CleanCSS, UglifyJS, etc...) if they're missing.
 
 ## Getting Started
 
 Head over to the GitHub repository to download Minifier Tools and get started by launching `minifier-tools.exe`
+
+## Prerequisites
+
+**1. Python:**
+
+Minifier Tools utilizes Python scripts for the EXE file. To use Minifier Tools, you'll either need Python installed on your system or a bash interpretor and your own coding skill to call directly the specific tool you need in your command prompt.
+
+**How to Install Python:**
+
+*   **Windows:** Download and install the latest Python version from the [official website](https://www.python.org/downloads/).
+> [!IMPORTANT]
+> Make sure to check the "Add Python 3.x to PATH" option during installation.
+
+*   **Mac/Linux:** Python might already be pre-installed on your system. Check by opening a terminal and running `python --version`. If not installed, download and install it from the [official website.](https://www.python.org/downloads/)
+
+**2. Bash Interpreter (e.g., Git Bash):**
+
+Minifier Tools utilizes Bash scripts for some functionalities. It's mandatory to have a Bash interpreter like Git Bash configured on your system for the minifier tools to work.
+
+**How to Install Git Bash:**
+
+*   Download the latest Git version from the [official website](https://git-scm.com/downloads) which includes Git Bash for Windows.
+> [!IMPORTANT]
+> During installation, make sure to select the option to "Use Git from the Windows command prompt" and "Add Git Bash to your PATH".
 
 ## How to Use It
 
@@ -50,7 +74,7 @@ Head over to the GitHub repository to download Minifier Tools and get started by
 
 **Standalone Minifier:**
 
-1.  Drag your JS and CSS files to the `to_minify` folder.
+1.  Drag your files to the `to_minify` folder.
 2.  Run the script.
 3.  Find your minified scripts in the `minified` folder.
 
