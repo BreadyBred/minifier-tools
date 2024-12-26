@@ -41,7 +41,6 @@ check_uglifyjs() {
 	carriage_return_message
 }
 
-
 # CleanCSS status check, install if not installed
 check_cleancss() {
 	info_message "Checking CleanCSS status..."
@@ -102,6 +101,30 @@ check_jsonminify() {
         info_message "JSON-Minify installed successfully."
     else
         useless_action_message "JSON-Minify is already installed!"
+    fi
+    carriage_return_message
+}
+
+# XMLLINT status check, install if not installed
+check_xmllint() {
+    info_message "Checking xmllint status..."
+    if ! command -v xmllint &> /dev/null; then
+        warning_message "xmllint is not installed. Installing..."
+        if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+            sudo apt-get install -y libxml2-utils
+        elif [[ "$OSTYPE" == "darwin"* ]]; then
+            brew install libxml2
+        else
+            handle_error "Operating system not supported for automatic xmllint installation.${CARRIAGE_RETURN}Please install xmllint manually."
+        fi
+
+        if ! command -v xmllint &> /dev/null; then
+            handle_error "xmllint installation failed. Please install it manually."
+        fi
+
+        info_message "xmllint installed successfully."
+    else
+        useless_action_message "xmllint is already installed!"
     fi
     carriage_return_message
 }

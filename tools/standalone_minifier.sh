@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script is designed to minify multiple types of files including CSS, JavaScript, HTML, SVG, JSON, YAML, and PHP.
+# This script is designed to minify multiple types of files including CSS, JavaScript, HTML, SVG, JSON and XML.
 
 # Strict mode, stop the script if an error occurs
 set -euo pipefail
@@ -16,7 +16,7 @@ INPUT_DIRECTORY="${ROOT_DIR}/to_minify/"
 OUTPUT_DIRECTORY="${ROOT_DIR}/minified/"
 INPUT_DIR_NAME=$(basename "$INPUT_DIRECTORY")
 OUTPUT_DIR_NAME=$(basename "$OUTPUT_DIRECTORY")
-file_types=("js" "css" "html" "svg" "json")
+FILE_TYPES=("js" "css" "html" "svg" "json", "xml")
 
 # Directories status check
 check_directories() {
@@ -56,6 +56,9 @@ check_tools() {
     if ls "$INPUT_DIRECTORY"*.json &> /dev/null; then
         check_jsonminify
     fi
+    if ls "$INPUT_DIRECTORY"*.xml &> /dev/null; then
+        check_xmllint
+    fi
 }
 
 # Minification process for each file type
@@ -67,11 +70,11 @@ minify() {
     check_directories
     check_tools
 
-    for file_type in "${file_types[@]}"; do
+    for file_type in "${FILE_TYPES[@]}"; do
         if ls "$INPUT_DIRECTORY"*.$file_type &> /dev/null; then
             minify_files "$file_type"
         else
-            useless_action_message "No ${file_type^^}e files found in '$INPUT_DIRECTORY'. Skipping minification for ${file_type^^}."  
+            useless_action_message "No '${file_type^^}' files found in '$INPUT_DIRECTORY'. Skipping minification for '${file_type^^}'."  
             carriage_return_message
         fi
     done
@@ -83,11 +86,11 @@ minify() {
 
 minify_files() {
     local file_type=$1
-    info_message "Starting minification of ${file_type^^} files from '$INPUT_DIR_NAME' to '$OUTPUT_DIR_NAME'..."
+    info_message "Starting minification of '${file_type^^}' files from '$INPUT_DIR_NAME' to '$OUTPUT_DIR_NAME'..."
 
     for INPUT_FILE in "$INPUT_DIRECTORY"*.$file_type; do
         if [ ! -f "$INPUT_FILE" ]; then
-            warning_message "No ${file_type^^} files found in '$INPUT_DIRECTORY'."
+            warning_message "No '${file_type^^}' files found in '$INPUT_DIRECTORY'."
             carriage_return_message
             continue
         fi
@@ -118,8 +121,12 @@ minify_files() {
                 info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
                 json-minify "$INPUT_FILE" > "$OUTPUT_FILE"
                 ;;
+            xml)
+                info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
+                xmllint --noblanks "$INPUT_FILE" -o "$OUTPUT_FILE"
+                ;;
             *)
-                warning_message "Unsupported file type: ${file_type^^}"
+                warning_message "Unsupported file type: '${file_type^^}'"
                 ;;
         esac
 
@@ -132,7 +139,7 @@ minify_files() {
         carriage_return_message
     done
 
-    success_message "All ${file_type^^} files in '$INPUT_DIR_NAME' have been processed."
+    success_message "All '${file_type^^}' files in '$INPUT_DIR_NAME' have been processed."
     carriage_return_message
 }
 

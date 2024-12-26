@@ -43,9 +43,9 @@ FILE_BASE=$(basename "$FILE_NAME")
 # File status check
 info_message "Checking script"
 if [ ! -f "$FILE_NAME" ]; then
-	handle_error "Error: $FILE_BASE doesn't exist."
+	handle_error "Error: '$FILE_BASE' doesn't exist."
 else
-	useless_action_message "$FILE_BASE exists!"
+	useless_action_message "'$FILE_BASE' exists!"
 fi
 carriage_return_message
 
@@ -57,7 +57,7 @@ info_message "Starting minification..."
 uglifyjs "$FILE_NAME" -o "$FILE_NAME" --compress --mangle
 
 if [ $? -eq 0 ]; then
-	success_message "$FILE_BASE has been minified successfully."
+	success_message "'$FILE_BASE' has been minified successfully."
 else
 	handle_error "Error during file minification."
 fi
