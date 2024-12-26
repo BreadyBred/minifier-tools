@@ -159,13 +159,15 @@ minify() {
 	check_uglifyjs
 	check_cleancss
 	
-	# Minify JavaScript files
+	# Minify all JavaScript files
 	minify_files "js"
 
-	# Minify CSS files
+	# Minify all CSS files
 	minify_files "css"
 
-	read -p "Press any key to continue..."
+	useless_action_message "Press any key to exit..."
+	read -n 1 -s
+	exit 1
 }
 
 minify

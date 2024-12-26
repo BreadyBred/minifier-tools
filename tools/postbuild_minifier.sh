@@ -93,4 +93,6 @@ else
 fi
 carriage_return_message
 
-read -p "Press any key to continue..."
+useless_action_message "Press any key to exit..."
+read -n 1 -s
+exit 1

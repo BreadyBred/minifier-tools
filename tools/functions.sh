@@ -10,6 +10,8 @@ CARRIAGE_RETURN="\n"
 
 handle_error() {
   echo -e "${RED}❌ An error occurred: $1${BLANK_SPACE}"
+  useless_action_message "Press any key to exit..."
+  read -n 1 -s
   exit 1
 }
 
