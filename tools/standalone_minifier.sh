@@ -99,16 +99,16 @@ check_uglifyjs() {
 
 # CleanCSS status check, install if not installed
 check_cleancss() {
-	info_message "Checking clean-css-cli status..."
+	info_message "Checking CleanCSS status..."
 	if ! command -v cleancss &> /dev/null; then
-		warning_message "clean-css-cli is not installed. Installing..."
+		warning_message "CleanCSS is not installed. Installing..."
 		npm install -g clean-css-cli
 		if [ $? -ne 0 ]; then
-			handle_error "clean-css-cli installation failed. Please check your npm configuration."
+			handle_error "CleanCSS installation failed. Please check your npm configuration."
 		fi
-		info_message "clean-css-cli installed successfully."
+		info_message "CleanCSS installed successfully."
 	else
-		useless_action_message "clean-css-cli is already installed!"
+		useless_action_message "CleanCSS is already installed!"
 	fi
 	carriage_return_message
 }
