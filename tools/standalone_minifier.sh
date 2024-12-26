@@ -16,7 +16,7 @@ INPUT_DIRECTORY="${ROOT_DIR}/to_minify/"
 OUTPUT_DIRECTORY="${ROOT_DIR}/minified/"
 INPUT_DIR_NAME=$(basename "$INPUT_DIRECTORY")
 OUTPUT_DIR_NAME=$(basename "$OUTPUT_DIRECTORY")
-FILE_TYPES=("js" "css" "html" "svg" "json", "xml")
+FILE_TYPES=("js" "css" "html" "svg" "json" "xml")
 
 # Directories status check
 check_directories() {
@@ -40,23 +40,24 @@ check_directories() {
     carriage_return_message
 }
 
+# Checking all needed tools
 check_tools() {
     check_nodejs
 
     if ls "$INPUT_DIRECTORY"*.js &> /dev/null; then
-        check_uglifyjs
+        check_tool "uglifyjs" "UglifyJS" "sudo npm install -g uglify-js" 
     fi
     if ls "$INPUT_DIRECTORY"*.css &> /dev/null; then
-        check_cleancss
+        check_tool "cleancss" "CleanCSS" "sudo npm install -g clean-css-cli" 
     fi
     if ls "$INPUT_DIRECTORY"*.html &> /dev/null; then
-        check_htmlminifier
+        check_tool "html-minifier" "HTML Minifier" "sudo npm install -g html-minifier" 
     fi
     if ls "$INPUT_DIRECTORY"*.svg &> /dev/null; then
-        check_svgo
+        check_tool "svgo" "SVGO" "sudo npm install -g svgo" 
     fi
     if ls "$INPUT_DIRECTORY"*.json &> /dev/null; then
-        check_jsonminify
+        check_tool "json-minify" "JSON Minify" "sudo npm install -g json-minify"
     fi
     if ls "$INPUT_DIRECTORY"*.xml &> /dev/null; then
         check_xmllint
@@ -76,7 +77,7 @@ minify() {
         if ls "$INPUT_DIRECTORY"*.$file_type &> /dev/null; then
             minify_files "$file_type"
         else
-            useless_action_message "No '${file_type^^}' files found in '$INPUT_DIRECTORY'. Skipping minification for '${file_type^^}'."  
+            useless_action_message "No '${file_type^^}' files found in '$OUTPUT_DIR_NAME'. Skipping minification for '${file_type^^}'."  
             carriage_return_message
         fi
     done
@@ -92,7 +93,7 @@ minify_files() {
 
     for INPUT_FILE in "$INPUT_DIRECTORY"*.$file_type; do
         if [ ! -f "$INPUT_FILE" ]; then
-            warning_message "No '${file_type^^}' files found in '$INPUT_DIRECTORY'."
+            warning_message "No '${file_type^^}' files found in '$INPUT_DIR_NAME'."
             carriage_return_message
             continue
         fi

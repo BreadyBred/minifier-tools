@@ -25,106 +25,46 @@ check_nodejs() {
 	carriage_return_message
 }
 
-# UglifyJS status check, install if not installed
-check_uglifyjs() {
-	info_message "Checking UglifyJS status..."
-	if ! command -v uglifyjs &> /dev/null; then
-		warning_message "UglifyJS is not installed. Installing..."
-		sudo npm install -g uglify-js
-		if [ $? -ne 0 ]; then
-			  	handle_error "UglifyJS installation failed. Please check your npm configuration."
-		fi
-		info_message "UglifyJS installed successfully."
-	else
-		useless_action_message "UglifyJS is already installed!"
-	fi
-	carriage_return_message
-}
+# Generic tool status check, install if not installed
+check_tool() {
+    local tool_name=$1
+    local bettered_name=$2
+    local install_command=$3
 
-# CleanCSS status check, install if not installed
-check_cleancss() {
-	info_message "Checking CleanCSS status..."
-	if ! command -v cleancss &> /dev/null; then
-		warning_message "CleanCSS is not installed. Installing..."
-		sudo npm install -g clean-css-cli
-		if [ $? -ne 0 ]; then
-			handle_error "CleanCSS installation failed. Please check your npm configuration."
-		fi
-		info_message "CleanCSS installed successfully."
-	else
-		useless_action_message "CleanCSS is already installed!"
-	fi
-	carriage_return_message
-}
-
-# HTML-Minifier status check, install if not installed
-check_htmlminifier() {
-    info_message "Checking HTMLMinifier status..."
-    if ! command -v html-minifier &> /dev/null; then
-        warning_message "HTMLMinifier is not installed. Installing..."
-        sudo npm install -g html-minifier
+    info_message "Checking $bettered_name status..."
+    if ! command -v $tool_name &> /dev/null; then
+        warning_message "$bettered_name is not installed. Installing..."
+        eval $install_command
         if [ $? -ne 0 ]; then
-            handle_error "HTMLMinifier installation failed. Please check your npm configuration."
+            handle_error "$bettered_name installation failed. Please install it manually."
         fi
-        info_message "HTMLMinifier installed successfully."
+        info_message "$bettered_name installed successfully."
     else
-        useless_action_message "HTMLMinifier is already installed!"
+        useless_action_message "$bettered_name is already installed!"
     fi
     carriage_return_message
 }
 
-# SVGO status check, install if not installed pour HTML
-check_svgo() {
-    info_message "Checking SVGO status..."
-    if ! command -v svgo &> /dev/null; then
-        warning_message "SVGO is not installed. Installing..."
-        sudo npm install -g svgo
-        if [ $? -ne 0 ]; then
-            handle_error "SVGO installation failed. Please check your npm configuration."
-        fi
-        info_message "SVGO installed successfully."
-    else
-        useless_action_message "SVGO is already installed!"
-    fi
-    carriage_return_message
-}
-
-# JSON-Minify status check, install if not installed
-check_jsonminify() {
-    info_message "Checking JSON-Minify status..."
-    if ! command -v json-minify &> /dev/null; then
-        warning_message "JSON-Minify is not installed. Installing..."
-        sudo npm install -g json-minify
-        if [ $? -ne 0 ]; then
-            handle_error "JSON-Minify installation failed. Please check your npm configuration."
-        fi
-        info_message "JSON-Minify installed successfully."
-    else
-        useless_action_message "JSON-Minify is already installed!"
-    fi
-    carriage_return_message
-}
-
-# XMLLINT status check, install if not installed
+# XMLLInt status check, install if not installed
 check_xmllint() {
-    info_message "Checking xmllint status..."
+    info_message "Checking XMLLInt status..."
     if ! command -v xmllint &> /dev/null; then
-        warning_message "xmllint is not installed. Installing..."
+        warning_message "XMLLInt is not installed. Installing..."
         if [[ "$OSTYPE" == "linux-gnu"* ]]; then
             sudo apt-get install -y libxml2-utils
         elif [[ "$OSTYPE" == "darwin"* ]]; then
             brew install libxml2
         else
-            handle_error "Operating system not supported for automatic xmllint installation.${CARRIAGE_RETURN}Please install xmllint manually."
+            handle_error "Operating system not supported for automatic XMLLInt installation.${CARRIAGE_RETURN}Please install it manually."
         fi
 
         if ! command -v xmllint &> /dev/null; then
-            handle_error "xmllint installation failed. Please install it manually."
+            handle_error "XMLLInt installation failed. Please install it manually."
         fi
 
-        info_message "xmllint installed successfully."
+        info_message "XMLLInt installed successfully."
     else
-        useless_action_message "xmllint is already installed!"
+        useless_action_message "XMLLInt is already installed!"
     fi
     carriage_return_message
 }

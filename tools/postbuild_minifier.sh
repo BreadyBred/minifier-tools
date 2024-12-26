@@ -50,7 +50,7 @@ fi
 carriage_return_message
 
 check_nodejs
-check_uglifyjs
+check_tool "uglifyjs" "UglifyJS" "sudo npm install -g uglify-js" 
 
 # Minification process
 info_message "Starting minification..."
