@@ -4,9 +4,6 @@
 
 # Minification is the process of reducing the size of files by removing unnecessary characters,
 # which helps improve website loading times and overall performance.
-# If you're working with TypeScript and prefer to minify your files automatically after each build,
-# i recommend using the Postbuild version of this script.
-# It allows you to minify the files immediately after the TypeScript compilation process, saving you time and effort.
 
 # This script supports two types of minification:
 # 	1. JavaScript files using UglifyJS
@@ -15,11 +12,13 @@
 # How to use:
 # 	1. Put your JavaScript and CSS files in the to_minify/ directory.
 # 	2. Run the script, which will minify the files and save the results in the minified/ directory.
-# 	3. You'll have the choice to either minify JavaScript or CSS files.
+# 	3. The script will minify every JS and CSS file it will find in this folder.
 
 # Any needed module (NodeJS, UglifyJS and CleanCSS) will be installed if needed.
 
-# If you want to use this script with every TypeScript build, refer to the Postbuild version. It will automatically run after the npm run build command.
+# If you're working with TypeScript and prefer to minify your files automatically after each build,
+# i recommend using the Postbuild version of this script.
+# It allows you to minify the files immediately after the TypeScript compilation process, saving you time and effort.
 
 # Strict mode, stop the script if an error occurs
 set -euo pipefail
@@ -117,7 +116,7 @@ check_cleancss() {
 # Minification process
 minify_files() {
 	local file_type=$1
-	info_message "Starting minification of $file_type files from '$INPUT_DIR_NAME' to 	'$OUTPUT_DIR_NAME'..."
+	info_message "Starting minification of $file_type files from '$INPUT_DIR_NAME' to '$OUTPUT_DIR_NAME'..."
 
 	for INPUT_FILE in "$INPUT_DIRECTORY"*.$file_type; do
 		if [ ! -f "$INPUT_FILE" ]; then
@@ -150,47 +149,23 @@ minify_files() {
 	success_message "All files in '$INPUT_DIR_NAME' have been processed."
 }
 
-# Function to prompt the user for choice
-choose_minifier() {
-	info_message "${CYAN}Choose your minifier:${BLANK_SPACE}"
-	PS3="Enter your choice (1 for JS, 2 for CSS): "
-	options=("JS (JavaScript)" "CSS (Stylesheets)")
-	select opt in "${options[@]}"; do
-		case $opt in
-			"JS (JavaScript)")
-				minify "js"
-				break
-				;;
-			"CSS (Stylesheets)")
-				minify "css"
-				break
-				;;
-			*) 
-				soft_error_message "Invalid choice. Please choose 1 for JS or 2 for CSS."
-				;;
-		esac
-	done
-}
-
-check_tools() {
-	if [ "$1" == "js" ]; then
-		check_uglifyjs
-	fi
-	
-	if [ "$1" == "css" ]; then
-		check_cleancss
-	fi
-}
-
 minify() {
+	info_message "This script will check every file from 'to_minify' and minify any JS and CSS file automatically."
+	info_message "Find the minified files in the 'minified' folder."
+
 	check_directories
 
 	check_nodejs
-	check_tools $1
+	check_uglifyjs
+	check_cleancss
 	
-	minify_files $1
+	# Minify JavaScript files
+	minify_files "js"
+
+	# Minify CSS files
+	minify_files "css"
 
 	read -p "Press any key to continue..."
 }
 
-choose_minifier
+minify

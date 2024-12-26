@@ -12,13 +12,13 @@
 # To integrate this script into your build process, add it as a post-build step in your package.json file.
 # Here's how:
 # 	"scripts": {
-# 		"build": "tsc", // Or your existing build command
-# 		"postbuild": "bash ./path/to/this/script/postbuild_minifier.sh" // Replace with the correct path
+# 		"build": "tsc",
+# 		"postbuild": "bash ./path/to/script/postbuild_minifier.sh"
 # 	}
 # Once you've added this, the script will run automatically after executing npm run build,
 # ensuring that your JavaScript files are minified without additional manual steps.
 
-# Any needed module (NodeJS, UglifyJS and CleanCSS) will be installed if needed.
+# Any needed module (NodeJS, UglifyJS) will be installed if needed.
 
 # If you need to minify multiple files at once, consider using the Standalone version of the script,
 # which allows for bulk processing of JavaScript files.
