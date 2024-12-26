@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# This script is designed to minify both CSS and JavaScript files.
+
+# Minification is the process of reducing the size of files by removing unnecessary characters,
+# which helps improve website loading times and overall performance.
+# If you're working with TypeScript and prefer to minify your files automatically after each build,
+# i recommend using the Postbuild version of this script.
+# It allows you to minify the files immediately after the TypeScript compilation process, saving you time and effort.
+
+# This script supports two types of minification:
+# 	1. JavaScript files using UglifyJS
+# 	2. CSS files using CleanCSS
+
+# How to use:
+# 	1. Put your JavaScript and CSS files in the to_minify/ directory.
+# 	2. Run the script, which will minify the files and save the results in the minified/ directory.
+# 	3. You'll have the choice to either minify JavaScript or CSS files.
+
+# Any needed module (NodeJS, UglifyJS and CleanCSS) will be installed if needed.
+
+# If you want to use this script with every TypeScript build, refer to the Postbuild version. It will automatically run after the npm run build command.
+
 # Strict mode, stop the script if an error occurs
 set -euo pipefail
 
@@ -16,10 +37,12 @@ OUTPUT_DIR_NAME=$(basename "$OUTPUT_DIRECTORY")
 
 # Directories status check
 check_directories() {
-  	info_message "Checking output directory..."
+	info_message "Checking output directory..."
 	if [ ! -d "$OUTPUT_DIRECTORY" ]; then
 		warning_message "Output directory '$OUTPUT_DIRECTORY' does not exist. Creating it..."
 		mkdir -p "$OUTPUT_DIRECTORY"
+	else
+		useless_action_message "Output directory already exists."
 	fi
 	carriage_return_message
 
@@ -28,6 +51,8 @@ check_directories() {
 		warning_message "Input directory '$INPUT_DIRECTORY' does not exist. Creating it..."
 		mkdir -p "$INPUT_DIRECTORY"
 		handle_error "Input directory '$INPUT_DIRECTORY' did not exist and has been created. Please add JavaScript files to process."
+	else
+		useless_action_message "Input directory already exists."
 	fi
 	carriage_return_message
 }
@@ -41,18 +66,18 @@ check_nodejs() {
 			curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 			sudo apt-get install -y nodejs
 		elif [[ "$OSTYPE" == "darwin"* ]]; then
-		  	brew install node
+			brew install node
 		else
-		  	handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
+			handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
 		fi
 
 		if ! command -v node &> /dev/null; then
-		  	handle_error "Node.js installation failed. Please install it manually."
+			handle_error "Node.js installation failed. Please install it manually."
 		fi
 
 		info_message "Node.js installed successfully."
 	else
-		info_message "Node.js is already installed!"
+		useless_action_message "Node.js is already installed!"
 	fi
 	carriage_return_message
 }
@@ -68,7 +93,7 @@ check_uglifyjs() {
 		fi
 		info_message "UglifyJS installed successfully."
 	else
-		info_message "UglifyJS is already installed!"
+		useless_action_message "UglifyJS is already installed!"
 	fi
 	carriage_return_message
 }
@@ -80,11 +105,11 @@ check_cleancss() {
 		warning_message "clean-css-cli is not installed. Installing..."
 		npm install -g clean-css-cli
 		if [ $? -ne 0 ]; then
-		  	handle_error "clean-css-cli installation failed. Please check your npm configuration."
+			handle_error "clean-css-cli installation failed. Please check your npm configuration."
 		fi
 		info_message "clean-css-cli installed successfully."
 	else
-		info_message "clean-css-cli is already installed!"
+		useless_action_message "clean-css-cli is already installed!"
 	fi
 	carriage_return_message
 }
@@ -96,8 +121,8 @@ minify_files() {
 
 	for INPUT_FILE in "$INPUT_DIRECTORY"*.$file_type; do
 		if [ ! -f "$INPUT_FILE" ]; then
-		  	warning_message "No $file_type files found in '$INPUT_DIRECTORY'."
-		  	continue
+			warning_message "No $file_type files found in '$INPUT_DIRECTORY'."
+			continue
 		fi
 
 		FILE_NAME=$(basename "$INPUT_FILE" .$file_type)
@@ -106,17 +131,17 @@ minify_files() {
 		OUTPUT_BASE_NAME="${FILE_NAME}-min.$file_type"
 
 		if [ "$file_type" == "js" ]; then
-		  	info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
-		  	uglifyjs "$INPUT_FILE" -o "$OUTPUT_FILE" --compress --mangle
+			info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
+			uglifyjs "$INPUT_FILE" -o "$OUTPUT_FILE" --compress --mangle
 		elif [ "$file_type" == "css" ]; then
-		  	info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
-		  	cleancss -o "$OUTPUT_FILE" "$INPUT_FILE"
+			info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
+			cleancss -o "$OUTPUT_FILE" "$INPUT_FILE"
 		fi
 
 		if [ $? -eq 0 ]; then
-		  	success_message "'$BASE_NAME' has been minified successfully to '$OUTPUT_BASE_NAME'."
+			success_message "'$BASE_NAME' has been minified successfully to '$OUTPUT_BASE_NAME'."
 		else
-		  	handle_error "Error during minification of '$BASE_NAME'."
+			handle_error "Error during minification of '$BASE_NAME'."
 		fi
 
 		carriage_return_message
@@ -127,7 +152,7 @@ minify_files() {
 
 # Function to prompt the user for choice
 choose_minifier() {
-  echo -e "${CYAN}Choose your minifier:${BLANK_SPACE}"
+  info_message "${CYAN}Choose your minifier:${BLANK_SPACE}"
   PS3="Enter your choice (1 for JS, 2 for CSS): "
   options=("JS (JavaScript)" "CSS (Stylesheets)")
   select opt in "${options[@]}"; do
@@ -141,7 +166,7 @@ choose_minifier() {
         break
         ;;
       *) 
-        echo "Invalid choice. Please choose 1 for JS or 2 for CSS."
+        soft_error_message "Invalid choice. Please choose 1 for JS or 2 for CSS."
         ;;
     esac
   done

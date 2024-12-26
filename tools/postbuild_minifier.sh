@@ -1,5 +1,28 @@
 #!/bin/bash
 
+# This script minifies JavaScript files using UglifyJS.
+# It is primarily intended for automatic post-build use, executed after compiling TypeScript,
+# but can also be used to minify any JavaScript file.
+
+# Minification is the process of reducing file size by removing unnecessary characters,
+# which in turn improves website performance by decreasing loading times.
+# This is especially useful for optimizing production files.
+
+# How to use:
+# To integrate this script into your build process, add it as a post-build step in your package.json file.
+# Here's how:
+# 	"scripts": {
+# 		"build": "tsc", // Or your existing build command
+# 		"postbuild": "bash ./path/to/this/script/postbuild_minifier.sh" // Replace with the correct path
+# 	}
+# Once you've added this, the script will run automatically after executing npm run build,
+# ensuring that your JavaScript files are minified without additional manual steps.
+
+# Any needed module (NodeJS, UglifyJS and CleanCSS) will be installed if needed.
+
+# If you need to minify multiple files at once, consider using the Standalone version of the script,
+# which allows for bulk processing of JavaScript files.
+
 # Strict mode, stop the script if an error occurs
 set -euo pipefail
 
@@ -9,73 +32,54 @@ ROOT_DIR="$(cd "$(dirname "$0")" && cd .. && pwd)"
 # Variables and functions import
 source ${ROOT_DIR}/tools/functions.sh
 
-#! Your path to the JS file to minify
-FILE_NAME="C://DIRECTORY/TO/JS/SCRIPT/script.js"
-
-handle_error() {
-  echo -e "${RED}❌ An error occured: $1 (╯°□°)╯︵ ┻━┻ ${BLANK_SPACE}"
-  exit 1
-}
-
-warning_message() {
-  echo -e "${ORANGE}$1 ¯\_(ツ)_/¯ ${BLANK_SPACE}"
-}
-
-success_message() {
-  echo -e "${GREEN}$1 *\(^o^)/* ${BLANK_SPACE}"
-}
-
-info_message() {
-  echo -e "${CYAN}$1${BLANK_SPACE}"
-}
-
-carriage_return_message() {
-	echo -e ""
-}
+#!--- Your path to the JS file to minify ---!#
+# FILE_NAME="C://PATH/TO/JS/SCRIPT/script.js"
+FILE_NAME="D:/xampp/htdocs/travail/projets/minifier-tools/to_minify/test_1.js"
+FILE_BASE=$(basename "$FILE_NAME")
 
 # File status check
 info_message "Checking script"
 if [ ! -f "$FILE_NAME" ]; then
-    handle_error "Error: $FILE_NAME doesn't exist."
+	handle_error "Error: $FILE_BASE doesn't exist."
 else
-	info_message "Script exists! Starting modules installation."
+	useless_action_message "$FILE_BASE exists!"
 fi
 carriage_return_message
 
 # NodeJS status check, install if not installed
 info_message "Checking Node.js status..."
 if ! command -v node &> /dev/null; then
-    warning_message "Node.js isn't installed. Installing..."
-    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-        curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-        sudo apt-get install -y nodejs
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        brew install node
-    else
-        handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
-    fi
+	warning_message "Node.js isn't installed. Installing..."
+	if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+		curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+		sudo apt-get install -y nodejs
+	elif [[ "$OSTYPE" == "darwin"* ]]; then
+		brew install node
+	else
+		handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
+	fi
 
-    if ! command -v node &> /dev/null; then
-        handle_error "Node.js installation failed. Please install it manually."
-    fi
+	if ! command -v node &> /dev/null; then
+		handle_error "Node.js installation failed. Please install it manually."
+	fi
 
-    info_message "Node.js installed successfully."
+	info_message "Node.js installed successfully."
 else
-    info_message "Node.js is already installed!"
+	useless_action_message "Node.js is already installed!"
 fi
 carriage_return_message
 
 # UglifyJS status check, install if not installed
 info_message "Checking UglifyJS status..."
 if ! command -v uglifyjs &> /dev/null; then
-    warning_message "UglifyJS is not installed. Installing..."
-    npm install -g uglify-js
-    if [ $? -ne 0 ]; then
-        handle_error "UglifyJS installation failed. Please check your npm configuration."
-    fi
-    info_message "UglifyJS installed successfully."
+	warning_message "UglifyJS is not installed. Installing..."
+	npm install -g uglify-js
+	if [ $? -ne 0 ]; then
+		handle_error "UglifyJS installation failed. Please check your npm configuration."
+	fi
+	info_message "UglifyJS installed successfully."
 else
-    info_message "UglifyJS is already installed!"
+	useless_action_message "UglifyJS is already installed!"
 fi
 carriage_return_message
 
@@ -84,9 +88,9 @@ info_message "Starting minification..."
 uglifyjs "$FILE_NAME" -o "$FILE_NAME" --compress --mangle
 
 if [ $? -eq 0 ]; then
-    success_message "$FILE_NAME has been minified successfully."
+	success_message "$FILE_BASE has been minified successfully."
 else
-    handle_error "Error during file minification."
+	handle_error "Error during file minification."
 fi
 carriage_return_message
 
