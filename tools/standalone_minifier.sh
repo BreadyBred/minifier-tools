@@ -153,6 +153,7 @@ minify_files() {
 minify() {
 	info_message "This script will check every file from 'to_minify' and minify any JS and CSS file automatically."
 	info_message "Find the minified files in the 'minified' folder."
+	carriage_return_message
 
 	check_directories
 
