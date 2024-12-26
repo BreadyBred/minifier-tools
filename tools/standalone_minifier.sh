@@ -147,6 +147,7 @@ minify_files() {
 	done
 
 	success_message "All files in '$INPUT_DIR_NAME' have been processed."
+	carriage_return_message
 }
 
 minify() {
