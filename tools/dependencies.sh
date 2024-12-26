@@ -11,9 +11,10 @@ check_nodejs() {
 			sudo apt-get install -y nodejs
 		elif [[ "$OSTYPE" == "darwin"* ]]; then
 			brew install node
+		#! Implement auto download of NodeJS for Windows
 		elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
-			handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
 			# choco install nodejs
+			handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
 		else
 			handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
 		fi
