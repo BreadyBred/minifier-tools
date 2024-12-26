@@ -1,24 +1,6 @@
 #!/bin/bash
 
-# This script is designed to minify both CSS and JavaScript files.
-
-# Minification is the process of reducing the size of files by removing unnecessary characters,
-# which helps improve website loading times and overall performance.
-
-# This script supports two types of minification:
-# 	1. JavaScript files using UglifyJS
-# 	2. CSS files using CleanCSS
-
-# How to use:
-# 	1. Put your JavaScript and CSS files in the to_minify/ directory.
-# 	2. Run the script, which will minify the files and save the results in the minified/ directory.
-# 	3. The script will minify every JS and CSS file it will find in this folder.
-
-# Any needed module (NodeJS, UglifyJS and CleanCSS) will be installed if needed.
-
-# If you're working with TypeScript and prefer to minify your files automatically after each build,
-# i recommend using the Postbuild version of this script.
-# It allows you to minify the files immediately after the TypeScript compilation process, saving you time and effort.
+# This script is designed to minify multiple types of files including CSS, JavaScript, HTML, SVG, JSON, YAML, and PHP.
 
 # Strict mode, stop the script if an error occurs
 set -euo pipefail
@@ -34,85 +16,124 @@ INPUT_DIRECTORY="${ROOT_DIR}/to_minify/"
 OUTPUT_DIRECTORY="${ROOT_DIR}/minified/"
 INPUT_DIR_NAME=$(basename "$INPUT_DIRECTORY")
 OUTPUT_DIR_NAME=$(basename "$OUTPUT_DIRECTORY")
+file_types=("js" "css" "html" "svg" "json")
 
 # Directories status check
 check_directories() {
-	info_message "Checking output directory..."
-	if [ ! -d "$OUTPUT_DIRECTORY" ]; then
-		warning_message "Output directory '$OUTPUT_DIRECTORY' does not exist. Creating it..."
-		mkdir -p "$OUTPUT_DIRECTORY"
-	else
-		useless_action_message "Output directory already exists."
-	fi
-	carriage_return_message
+    info_message "Checking output directory..."
+    if [ ! -d "$OUTPUT_DIRECTORY" ]; then
+        warning_message "Output directory '$OUTPUT_DIRECTORY' does not exist. Creating it..."
+        mkdir -p "$OUTPUT_DIRECTORY"
+    else
+        useless_action_message "Output directory already exists."
+    fi
+    carriage_return_message
 
-	info_message "Checking input directory..."
-	if [ ! -d "$INPUT_DIRECTORY" ]; then
-		warning_message "Input directory '$INPUT_DIRECTORY' does not exist. Creating it..."
-		mkdir -p "$INPUT_DIRECTORY"
-		handle_error "Input directory '$INPUT_DIRECTORY' did not exist and has been created. Please add JavaScript files to process."
-	else
-		useless_action_message "Input directory already exists."
-	fi
-	carriage_return_message
+    info_message "Checking input directory..."
+    if [ ! -d "$INPUT_DIRECTORY" ]; then
+        warning_message "Input directory '$INPUT_DIRECTORY' does not exist. Creating it..."
+        mkdir -p "$INPUT_DIRECTORY"
+        handle_error "Input directory '$INPUT_DIRECTORY' did not exist and has been created. Please add files to process."
+    else
+        useless_action_message "Input directory already exists."
+    fi
+    carriage_return_message
 }
 
-# Minification process
-minify_files() {
-	local file_type=$1
-	info_message "Starting minification of $file_type files from '$INPUT_DIR_NAME' to '$OUTPUT_DIR_NAME'..."
-
-	for INPUT_FILE in "$INPUT_DIRECTORY"*.$file_type; do
-		if [ ! -f "$INPUT_FILE" ]; then
-			warning_message "No $file_type files found in '$INPUT_DIRECTORY'."
-			continue
-		fi
-
-		FILE_NAME=$(basename "$INPUT_FILE" .$file_type)
-		BASE_NAME=$(basename "$INPUT_FILE")
-		OUTPUT_FILE="${OUTPUT_DIRECTORY}${FILE_NAME}-min.$file_type"
-		OUTPUT_BASE_NAME="${FILE_NAME}-min.$file_type"
-
-		if [ "$file_type" == "js" ]; then
-			info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
-			uglifyjs "$INPUT_FILE" -o "$OUTPUT_FILE" --compress --mangle
-		elif [ "$file_type" == "css" ]; then
-			info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
-			cleancss -o "$OUTPUT_FILE" "$INPUT_FILE"
-		fi
-
-		if [ $? -eq 0 ]; then
-			success_message "'$BASE_NAME' has been minified successfully to '$OUTPUT_BASE_NAME'."
-		else
-			handle_error "Error during minification of '$BASE_NAME'."
-		fi
-
-		carriage_return_message
-	done
-
-	success_message "All files in '$INPUT_DIR_NAME' have been processed."
-	carriage_return_message
+check_tools() {
+    if ls "$INPUT_DIRECTORY"*.js &> /dev/null; then
+        check_uglifyjs
+    fi
+    if ls "$INPUT_DIRECTORY"*.css &> /dev/null; then
+        check_cleancss
+    fi
+    if ls "$INPUT_DIRECTORY"*.html &> /dev/null; then
+        check_htmlminifier
+    fi
+    if ls "$INPUT_DIRECTORY"*.svg &> /dev/null; then
+        check_svgo
+    fi
+    if ls "$INPUT_DIRECTORY"*.json &> /dev/null; then
+        check_jsonminify
+    fi
 }
 
+# Minification process for each file type
 minify() {
-	info_message "This script will check every file from 'to_minify' and minify any JS and CSS file automatically."
-	info_message "Find the minified files in the 'minified' folder."
-	carriage_return_message
+    info_message "This script will check every file from 'to_minify' and minify any supported file automatically."
+    info_message "Find the minified files in the 'minified' folder."
+    carriage_return_message
 
-	check_directories
-	check_nodejs
-	check_uglifyjs
-	check_cleancss
-	
-	# Minify all JavaScript files
-	minify_files "js"
+    check_directories
+    check_tools
 
-	# Minify all CSS files
-	minify_files "css"
+    for file_type in "${file_types[@]}"; do
+        if ls "$INPUT_DIRECTORY"*.$file_type &> /dev/null; then
+            minify_files "$file_type"
+        else
+            useless_action_message "No ${file_type^^}e files found in '$INPUT_DIRECTORY'. Skipping minification for ${file_type^^}."  
+            carriage_return_message
+        fi
+    done
 
-	useless_action_message "Press any key to exit..."
-	read -n 1 -s
-	exit 1
+    useless_action_message "Press any key to exit..."
+    read -n 1 -s
+    exit 1
+}
+
+minify_files() {
+    local file_type=$1
+    info_message "Starting minification of ${file_type^^} files from '$INPUT_DIR_NAME' to '$OUTPUT_DIR_NAME'..."
+
+    for INPUT_FILE in "$INPUT_DIRECTORY"*.$file_type; do
+        if [ ! -f "$INPUT_FILE" ]; then
+            warning_message "No ${file_type^^} files found in '$INPUT_DIRECTORY'."
+            carriage_return_message
+            continue
+        fi
+
+        FILE_NAME=$(basename "$INPUT_FILE" .$file_type)
+        BASE_NAME=$(basename "$INPUT_FILE")
+        OUTPUT_FILE="${OUTPUT_DIRECTORY}${FILE_NAME}-min.$file_type"
+        OUTPUT_BASE_NAME="${FILE_NAME}-min.$file_type"
+
+        case "$file_type" in
+            js)
+                info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
+                uglifyjs "$INPUT_FILE" -o "$OUTPUT_FILE" --compress --mangle
+                ;;
+            css)
+                info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
+                cleancss -o "$OUTPUT_FILE" "$INPUT_FILE"
+                ;;
+            html)
+                info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
+                html-minifier --collapse-whitespace --remove-comments --minify-js true --minify-css true "$INPUT_FILE" -o "$OUTPUT_FILE"
+                ;;
+            svg)
+                info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
+                svgo --quiet "$INPUT_FILE" -o "$OUTPUT_FILE"
+                ;;
+            json)
+                info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
+                json-minify "$INPUT_FILE" > "$OUTPUT_FILE"
+                ;;
+            *)
+                warning_message "Unsupported file type: ${file_type^^}"
+                ;;
+        esac
+
+        if [ $? -eq 0 ]; then
+            success_message "'$BASE_NAME' has been minified successfully to '$OUTPUT_BASE_NAME'."
+        else
+            handle_error "Error during minification of '$BASE_NAME'."
+        fi
+
+        carriage_return_message
+    done
+
+    success_message "All ${file_type^^} files in '$INPUT_DIR_NAME' have been processed."
+    carriage_return_message
 }
 
 minify

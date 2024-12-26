@@ -30,7 +30,7 @@ check_uglifyjs() {
 	info_message "Checking UglifyJS status..."
 	if ! command -v uglifyjs &> /dev/null; then
 		warning_message "UglifyJS is not installed. Installing..."
-		npm install -g uglify-js
+		sudo npm install -g uglify-js
 		if [ $? -ne 0 ]; then
 			  	handle_error "UglifyJS installation failed. Please check your npm configuration."
 		fi
@@ -47,7 +47,7 @@ check_cleancss() {
 	info_message "Checking CleanCSS status..."
 	if ! command -v cleancss &> /dev/null; then
 		warning_message "CleanCSS is not installed. Installing..."
-		npm install -g clean-css-cli
+		sudo npm install -g clean-css-cli
 		if [ $? -ne 0 ]; then
 			handle_error "CleanCSS installation failed. Please check your npm configuration."
 		fi
@@ -56,4 +56,52 @@ check_cleancss() {
 		useless_action_message "CleanCSS is already installed!"
 	fi
 	carriage_return_message
+}
+
+# HTML-Minifier status check, install if not installed
+check_htmlminifier() {
+    info_message "Checking HTMLMinifier status..."
+    if ! command -v html-minifier &> /dev/null; then
+        warning_message "HTMLMinifier is not installed. Installing..."
+        sudo npm install -g html-minifier
+        if [ $? -ne 0 ]; then
+            handle_error "HTMLMinifier installation failed. Please check your npm configuration."
+        fi
+        info_message "HTMLMinifier installed successfully."
+    else
+        useless_action_message "HTMLMinifier is already installed!"
+    fi
+    carriage_return_message
+}
+
+# SVGO status check, install if not installed pour HTML
+check_svgo() {
+    info_message "Checking SVGO status..."
+    if ! command -v svgo &> /dev/null; then
+        warning_message "SVGO is not installed. Installing..."
+        sudo npm install -g svgo
+        if [ $? -ne 0 ]; then
+            handle_error "SVGO installation failed. Please check your npm configuration."
+        fi
+        info_message "SVGO installed successfully."
+    else
+        useless_action_message "SVGO is already installed!"
+    fi
+    carriage_return_message
+}
+
+# JSON-Minify status check, install if not installed
+check_jsonminify() {
+    info_message "Checking JSON-Minify status..."
+    if ! command -v json-minify &> /dev/null; then
+        warning_message "JSON-Minify is not installed. Installing..."
+        sudo npm install -g json-minify
+        if [ $? -ne 0 ]; then
+            handle_error "JSON-Minify installation failed. Please check your npm configuration."
+        fi
+        info_message "JSON-Minify installed successfully."
+    else
+        useless_action_message "JSON-Minify is already installed!"
+    fi
+    carriage_return_message
 }
