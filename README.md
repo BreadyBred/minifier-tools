@@ -1,28 +1,36 @@
 # Minifier Tools
 
-**Tired of manually minifying your JS and CSS files?** Minifier Tools is a handy GitHub repository that provides you with three easy ways to minify your files locally and on demand!
+**Tired of manually minifying your files?** Minifier Tools is a handy GitHub repository that provides you with three easy ways to minify your files locally and on demand!
 
 ## What it Does
 
-Minifier Tools allows you to quickly reduce the size of your JavaScript and CSS files. This can significantly improve website loading times and performance.
+Minifier Tools allows you to quickly reduce the size of your files. This can significantly improve website loading times and performance.
+
+## Supported types
+
+*   JavaScript
+*   CSS
+*   JSON
+*   HTML
+*   XML
+*   SVG
 
 ## Features
 
-There are three ways to use Minifier Tools:
+There are two ways to use Minifier Tools:
 
 *   **Post-build Minifier:** Perfect for integration with your build process. Simply add a script to your `package.json` to automatically minify your compiled JavaScript file after running `npm run build`. This script **WILL** overwrite your old JavaScript file.
-*   **Standalone Minifier:** Drag your JS and CSS files to the `to_minify` folder. Run the script and voila! Your minified files will appear in the `minified` folder. No configuration needed!
-*   **Portable Minifier:** This interactive script prompts you for the absolute path of a file (using forward slashes `/`) and minifies it on the spot.
+*   **Standalone Minifier:** Drag your files to the `to_minify` folder. Run the script and voilà! Your minified files will appear in the `minified` folder. No manual configuration needed!
 
 **Important Notes:**
 
 *   The post-build minifier currently only works with JavaScript files.
-*   Standalone and Portable versions will not overwrite existing files. Minified files will have a suffix of `-min.js` or `-min.css`.
+*   Standalone version will not overwrite existing files. Minified files will have a suffix of `-min.extension`.
 *   All scripts automatically check for and install necessary tools (NodeJS, CleanCSS, UglifyJS) if they're missing.
 
 ## Getting Started
 
-Head over to the GitHub repository to download Minifier Tools and get started: [Link to your GitHub repository here]
+Head over to the GitHub repository to download Minifier Tools and get started by launching `minifier-tools.exe`
 
 ## How to Use It
 
@@ -46,15 +54,7 @@ Head over to the GitHub repository to download Minifier Tools and get started: [
 2.  Run the script.
 3.  Find your minified scripts in the `minified` folder.
 
-**Portable Minifier:**
-
-1.  Run the script.
-2.  Enter the absolute path (using forward slashes `/`, `\` are **NOT** supported) of the file you want to minify when prompted.
-3.  Find the minified file under `$FILE_NAME-min.extension`.
-
 ## Technologies Used
 
 *   Shell
 *   Node.js
-*   CleanCSS
-*   UglifyJS

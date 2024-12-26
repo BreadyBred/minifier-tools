@@ -41,6 +41,8 @@ check_directories() {
 }
 
 check_tools() {
+    check_nodejs
+
     if ls "$INPUT_DIRECTORY"*.js &> /dev/null; then
         check_uglifyjs
     fi
