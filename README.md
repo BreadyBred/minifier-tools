@@ -10,14 +10,14 @@ Minifier Tools allows you to quickly reduce the size of your JavaScript and CSS 
 
 There are three ways to use Minifier Tools:
 
-*   **Post-build Minifier:** Perfect for integration with your build process. Simply add a script to your `package.json` to automatically minify your compiled JavaScript file after running `npm run build`.
+*   **Post-build Minifier:** Perfect for integration with your build process. Simply add a script to your `package.json` to automatically minify your compiled JavaScript file after running `npm run build`. This script **WILL** overwrite your old JavaScript file.
 *   **Standalone Minifier:** Drag your JS and CSS files to the `to_minify` folder. Run the script and voila! Your minified files will appear in the `minified` folder. No configuration needed!
 *   **Portable Minifier:** This interactive script prompts you for the absolute path of a file (using forward slashes `/`) and minifies it on the spot.
 
 **Important Notes:**
 
 *   The post-build minifier currently only works with JavaScript files.
-*   None of the tools overwrite existing files. Minified files will have a suffix of `-min.js` or `-min.css`.
+*   Standalone and Portable versions will not overwrite existing files. Minified files will have a suffix of `-min.js` or `-min.css`.
 *   All scripts automatically check for and install necessary tools (NodeJS, CleanCSS, UglifyJS) if they're missing.
 
 ## Getting Started

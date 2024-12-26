@@ -18,6 +18,9 @@
 # Once you've added this, the script will run automatically after executing npm run build,
 # ensuring that your JavaScript files are minified without additional manual steps.
 
+# This script WILL overwrite your old JavaScript file because it is meant
+# to be combined with a TypeScript environment.
+
 # Any needed module (NodeJS, UglifyJS) will be installed if needed.
 
 # If you need to minify multiple files at once, consider using the Standalone version of the script,
@@ -31,6 +34,7 @@ ROOT_DIR="$(cd "$(dirname "$0")" && cd .. && pwd)"
 
 # Variables and functions import
 source ${ROOT_DIR}/tools/functions.sh
+source ${ROOT_DIR}/tools/dependencies.sh
 
 #!--- Your path to the JS file to minify ---!#
 FILE_NAME="C://PATH/TO/JS/SCRIPT/script.js"
@@ -45,42 +49,8 @@ else
 fi
 carriage_return_message
 
-# NodeJS status check, install if not installed
-info_message "Checking Node.js status..."
-if ! command -v node &> /dev/null; then
-	warning_message "Node.js isn't installed. Installing..."
-	if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-		curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-		sudo apt-get install -y nodejs
-	elif [[ "$OSTYPE" == "darwin"* ]]; then
-		brew install node
-	else
-		handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
-	fi
-
-	if ! command -v node &> /dev/null; then
-		handle_error "Node.js installation failed. Please install it manually."
-	fi
-
-	info_message "Node.js installed successfully."
-else
-	useless_action_message "Node.js is already installed!"
-fi
-carriage_return_message
-
-# UglifyJS status check, install if not installed
-info_message "Checking UglifyJS status..."
-if ! command -v uglifyjs &> /dev/null; then
-	warning_message "UglifyJS is not installed. Installing..."
-	npm install -g uglify-js
-	if [ $? -ne 0 ]; then
-		handle_error "UglifyJS installation failed. Please check your npm configuration."
-	fi
-	info_message "UglifyJS installed successfully."
-else
-	useless_action_message "UglifyJS is already installed!"
-fi
-carriage_return_message
+check_nodejs
+check_uglifyjs
 
 # Minification process
 info_message "Starting minification..."

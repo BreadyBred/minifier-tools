@@ -27,6 +27,7 @@ ROOT_DIR="$(cd "$(dirname "$0")" && cd .. && pwd)"
 
 # Variables and functions import
 source ${ROOT_DIR}/tools/functions.sh
+source ${ROOT_DIR}/tools/dependencies.sh
 
 # Check if the provided file path exists
 check_file_exists() {
@@ -40,42 +41,33 @@ check_file_exists() {
 
 # Function to prompt the user for a file path
 prompt_file_path() {
-	warning_message "(/!\ The path needs to be in this format: 'C://'. 'C:\' will not be recognized. /!\)"
-	read -p "Enter the full path of the file you want to minify (Shift + Insert to paste a path): " file_path
-	if [ -n "$file_path" ]; then
-		FILE_NAME="$file_path"
-		FILE_BASE=$(basename "$FILE_NAME")
+    while true; do
+        warning_message "(/!\ The path needs to be in this format: 'C://'. 'C:\' will not be recognized. /!\)"
+        read -p "Enter the full path of the file you want to minify (Shift + Insert to paste a path): " file_path
+        if [ -n "$file_path" ]; then
+            FILE_NAME="$file_path"
+            FILE_BASE=$(basename "$FILE_NAME")
+            dir $file_path
 
-		if check_file_exists "$file_path"; then
-			detect_file_extension
-		else
-			handle_error "The file '$file_path' does not exist. Please provide a valid path."
-		fi
-	fi
+            if check_file_exists "$file_path"; then
+                detect_file_extension
+                break
+            else
+                soft_error_message "The file '$file_path' does not exist. Please provide a valid path."
+				carriage_return_message
+            fi
+        else
+            soft_error_message "You didn't enter a file path. Please try again."
+			carriage_return_message
+        fi
+    done
 }
+
 
 # Get the file extension from the file path
 get_file_extension() {
 	local file_path="$1"
 	echo "${file_path##*.}" | tr '[:upper:]' '[:lower:]'
-}
-
-# Minification process
-minify_file() {
-	check_nodejs
-	local file_type="$1"
-
-	if [ "$file_type" == "js" ]; then
-		check_uglifyjs
-		uglifyjs "$FILE_NAME" -o "$FILE_NAME" --compress --mangle || handle_error "Failed to minify JavaScript file."
-		success_message "'$FILE_BASE' minified successfully."
-	elif [ "$file_type" == "css" ]; then
-		check_cleancss
-		cleancss -o "$FILE_NAME" "$FILE_NAME" || handle_error "Failed to minify CSS file."
-		success_message "'$FILE_BASE' minified successfully."
-	else
-		handle_error "Unsupported file type: $file_type"
-	fi
 }
 
 # Detect file extension
@@ -88,61 +80,26 @@ detect_file_extension() {
 	minify_file "$file_extension"
 }
 
-# Node.JS status check, install if not installed
-check_nodejs() {
-	info_message "Checking Node.js status..."
-	if ! command -v node &> /dev/null; then
-		warning_message "Node.js isn't installed. Installing..."
-		if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-			curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-			sudo apt-get install -y nodejs
-		elif [[ "$OSTYPE" == "darwin"* ]]; then
-			brew install node
-		else
-			handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
-		fi
+# Minification process
+minify_file() {
+    check_nodejs
+    local file_type="$1"
+    local minified_file_name="${FILE_NAME%.*}-min.${FILE_NAME##*.}"
 
-		if ! command -v node &> /dev/null; then
-			handle_error "Node.js installation failed. Please install it manually."
-		fi
+    if [ "$file_type" == "js" ]; then
+        check_uglifyjs
+        uglifyjs "$FILE_NAME" -o "$minified_file_name" --compress --mangle || handle_error "Failed to minify JavaScript file."
+        success_message "'$FILE_BASE' minified successfully."
 
-		info_message "Node.js installed successfully."
-	else
-		useless_action_message "Node.js is already installed!"
-	fi
-	carriage_return_message
+    elif [ "$file_type" == "css" ]; then
+        check_cleancss
+        cleancss -o "$minified_file_name" "$FILE_NAME" || handle_error "Failed to minify CSS file."
+        success_message "'$FILE_BASE' minified successfully."
+
+    else
+        handle_error "Unsupported file type: $file_type"
+    fi
 }
 
-# UglifyJS status check, install if not installed
-check_uglifyjs() {
-	info_message "Checking UglifyJS status..."
-	if ! command -v uglifyjs &> /dev/null; then
-		warning_message "UglifyJS is not installed. Installing..."
-		npm install -g uglify-js
-		if [ $? -ne 0 ]; then
-			  	handle_error "UglifyJS installation failed. Please check your npm configuration."
-		fi
-		info_message "UglifyJS installed successfully."
-	else
-		useless_action_message "UglifyJS is already installed!"
-	fi
-	carriage_return_message
-}
-
-# CleanCSS status check, install if not installed
-check_cleancss() {
-	info_message "Checking CleanCSS status..."
-	if ! command -v cleancss &> /dev/null; then
-		warning_message "CleanCSS is not installed. Installing..."
-		npm install -g clean-css-cli
-		if [ $? -ne 0 ]; then
-			handle_error "CleanCSS installation failed. Please check your npm configuration."
-		fi
-		info_message "CleanCSS installed successfully."
-	else
-		useless_action_message "CleanCSS is already installed!"
-	fi
-	carriage_return_message
-}
 
 prompt_file_path
