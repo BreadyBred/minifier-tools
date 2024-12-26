@@ -1,2 +1,10 @@
 # Test files
 test*
+
+# Tool EXE file
+*.py
+
+# Build files and folders
+build/
+dist/
+*.spec
