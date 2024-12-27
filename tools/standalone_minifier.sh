@@ -9,8 +9,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")" && cd .. && pwd)"
 
 # Variables and functions import
-source ${ROOT_DIR}/tools/functions.sh
-source ${ROOT_DIR}/tools/dependencies.sh
+source "${ROOT_DIR}/tools/functions.sh"
+source "${ROOT_DIR}/tools/dependencies.sh"
 
 INPUT_DIRECTORY="${ROOT_DIR}/to_minify/"
 OUTPUT_DIRECTORY="${ROOT_DIR}/minified/"
@@ -22,20 +22,20 @@ FILE_TYPES=("js" "css" "html" "svg" "json")
 check_directories() {
     info_message "Checking output directory..."
     if [ ! -d "$OUTPUT_DIRECTORY" ]; then
-        warning_message "Output directory '$OUTPUT_DIRECTORY' does not exist. Creating it..."
-        mkdir -p "$OUTPUT_DIRECTORY"
+        warning_message "Output directory \"$OUTPUT_DIRECTORY\" does not exist. Creating it..."
+        mkdir -p "$OUTPUT_DIRECTORY" || handle_error "Failed to create output directory \"$OUTPUT_DIR_NAME\". Check permissions."
     else
-        useless_action_message "Output directory already exists."
+        useless_action_message "Output directory \"$OUTPUT_DIR_NAME\" already exists."
     fi
     carriage_return_message
 
     info_message "Checking input directory..."
     if [ ! -d "$INPUT_DIRECTORY" ]; then
-        warning_message "Input directory '$INPUT_DIRECTORY' does not exist. Creating it..."
-        mkdir -p "$INPUT_DIRECTORY"
-        handle_error "Input directory '$INPUT_DIRECTORY' did not exist and has been created. Please add files to process."
+        warning_message "Input directory \"$INPUT_DIR_NAME\" does not exist. Creating it..."
+        mkdir -p "$INPUT_DIRECTORY" || handle_error "Failed to create input directory \"$INPUT_DIR_NAME\". Check permissions."
+        handle_error "Input directory \"$INPUT_DIR_NAME\" did not exist and has been created. Please add files to process."
     else
-        useless_action_message "Input directory already exists."
+        useless_action_message "Input directory \"$INPUT_DIR_NAME\" already exists."
     fi
     carriage_return_message
 }
