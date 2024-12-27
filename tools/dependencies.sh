@@ -10,11 +10,17 @@ check_nodejs() {
 			curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 			sudo apt-get install -y nodejs
 		elif [[ "$OSTYPE" == "darwin"* ]]; then
+			if ! command -v brew &> /dev/null; then
+				warning_message "Homebrew isn't installed. Installing..."
+				/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+			else
+				useless_action_message "Homebrew is already installed!"
+			fi
 			brew install node
 		#! Implement auto download of NodeJS for Windows
 		elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
 			# choco install nodejs
-			handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
+			handle_error "Windows is not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
 		else
 			handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
 		fi
@@ -46,30 +52,6 @@ check_tool() {
 		info_message "$bettered_name installed successfully."
 	else
 		useless_action_message "$bettered_name is already installed!"
-	fi
-	carriage_return_message
-}
-
-# XMLLInt status check, install if not installed
-check_xmllint() {
-	info_message "Checking XMLLInt status..."
-	if ! command -v xmllint &> /dev/null; then
-		warning_message "XMLLInt is not installed. Installing..."
-		if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-			sudo apt-get install -y libxml2-utils
-		elif [[ "$OSTYPE" == "darwin"* ]]; then
-			brew install libxml2
-		else
-			handle_error "Operating system not supported for automatic XMLLInt installation.${CARRIAGE_RETURN}Please install it manually."
-		fi
-
-		if ! command -v xmllint &> /dev/null; then
-			handle_error "XMLLInt installation failed. Please install it manually."
-		fi
-
-		info_message "XMLLInt installed successfully."
-	else
-		useless_action_message "XMLLInt is already installed!"
 	fi
 	carriage_return_message
 }

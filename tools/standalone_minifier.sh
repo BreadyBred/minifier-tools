@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script is designed to minify multiple types of files including CSS, JavaScript, HTML, SVG, JSON and XML.
+# This script is designed to minify multiple types of files including CSS, JavaScript, HTML, SVG and JSON.
 
 # Strict mode, stop the script if an error occurs
 set -euo pipefail
@@ -16,7 +16,7 @@ INPUT_DIRECTORY="${ROOT_DIR}/to_minify/"
 OUTPUT_DIRECTORY="${ROOT_DIR}/minified/"
 INPUT_DIR_NAME=$(basename "$INPUT_DIRECTORY")
 OUTPUT_DIR_NAME=$(basename "$OUTPUT_DIRECTORY")
-FILE_TYPES=("js" "css" "html" "svg" "json" "xml")
+FILE_TYPES=("js" "css" "html" "svg" "json")
 
 # Directories status check
 check_directories() {
@@ -45,22 +45,19 @@ check_tools() {
     check_nodejs
 
     if ls "$INPUT_DIRECTORY"*.js &> /dev/null; then
-        check_tool "uglifyjs" "UglifyJS" "sudo npm install -g uglify-js" 
+        check_tool "uglifyjs" "UglifyJS" "npm install -g uglify-js" 
     fi
     if ls "$INPUT_DIRECTORY"*.css &> /dev/null; then
-        check_tool "cleancss" "CleanCSS" "sudo npm install -g clean-css-cli" 
+        check_tool "cleancss" "CleanCSS" "npm install -g clean-css-cli" 
     fi
     if ls "$INPUT_DIRECTORY"*.html &> /dev/null; then
-        check_tool "html-minifier" "HTML Minifier" "sudo npm install -g html-minifier" 
+        check_tool "html-minifier" "HTML Minifier" "npm install -g html-minifier" 
     fi
     if ls "$INPUT_DIRECTORY"*.svg &> /dev/null; then
-        check_tool "svgo" "SVGO" "sudo npm install -g svgo" 
+        check_tool "svgo" "SVGO" "npm install -g svgo" 
     fi
     if ls "$INPUT_DIRECTORY"*.json &> /dev/null; then
-        check_tool "json-minify" "JSON Minify" "sudo npm install -g json-minify"
-    fi
-    if ls "$INPUT_DIRECTORY"*.xml &> /dev/null; then
-        check_xmllint
+        check_tool "json-minify" "JSON Minify" "npm install -g json-minify"
     fi
 }
 
@@ -123,10 +120,6 @@ minify_files() {
             json)
                 info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
                 json-minify "$INPUT_FILE" > "$OUTPUT_FILE"
-                ;;
-            xml)
-                info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
-                xmllint --noblanks "$INPUT_FILE" -o "$OUTPUT_FILE"
                 ;;
             *)
                 warning_message "Unsupported file type: '${file_type^^}'"

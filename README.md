@@ -12,7 +12,6 @@ Minifier Tools allows you to quickly reduce the size of your files. This can sig
 *   CSS
 *   JSON
 *   HTML
-*   XML
 *   SVG
 
 ## Features
@@ -34,7 +33,25 @@ Head over to the GitHub repository to download Minifier Tools and get started by
 
 ## Prerequisites
 
-**1. Python:**
+**1. Node.js and NPM:**
+
+Minifier Tools requires a functional Node.js environment and NPM (Node Package Manager) for installing and using the necessary tools. Ensure that Node.js and NPM are installed and properly configured on your system before proceeding.
+
+**How to Install Node.js and NPM:**
+
+*   **Windows/Mac/Linux:** 
+    - Download the latest stable version of Node.js from the [official website](https://nodejs.org/).
+    - NPM comes bundled with Node.js, so no separate installation is needed.
+    - After installation, verify that Node.js and NPM are installed correctly by running the following commands in your terminal:
+        ```bash
+        node --version
+        npm --version
+        ```
+
+> [!IMPORTANT]
+> Make sure Node.js is added to your PATH environment variable during installation.
+
+**2. Python:**
 
 Minifier Tools utilizes Python scripts for the EXE file. To use Minifier Tools, you'll either need Python installed on your system or a bash interpretor and your own coding skill to call directly the specific tool you need in your command prompt.
 
@@ -46,13 +63,13 @@ Minifier Tools utilizes Python scripts for the EXE file. To use Minifier Tools, 
 
 *   **Mac/Linux:** Python might already be pre-installed on your system. Check by opening a terminal and running `python --version`. If not installed, download and install it from the [official website.](https://www.python.org/downloads/)
 
-**2. Bash Interpreter (e.g., Git Bash):**
+**3. Bash Interpreter (e.g., Git Bash):**
 
 Minifier Tools utilizes Bash scripts for some functionalities. It's mandatory to have a Bash interpreter like Git Bash configured on your system for the minifier tools to work.
 
 **How to Install Git Bash:**
 
-*   Download the latest Git version from the [official website](https://git-scm.com/downloads) which includes Git Bash for Windows.
+*   **Windows/Mac/Linux:** Download the latest Git version from the [official website](https://git-scm.com/downloads) which includes Git Bash for Windows.
 > [!IMPORTANT]
 > During installation, make sure to select the option to "Use Git from the Windows command prompt" and "Add Git Bash to your PATH".
 
