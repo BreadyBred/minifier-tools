@@ -4,34 +4,10 @@
 check_nodejs() {
 	info_message "Checking Node.js status..."
 	if ! command -v node &> /dev/null; then
-		warning_message "Node.js isn't installed. Installing..."
-
-		if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-			curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-			sudo apt-get install -y nodejs
-		elif [[ "$OSTYPE" == "darwin"* ]]; then
-			if ! command -v brew &> /dev/null; then
-				warning_message "Homebrew isn't installed. Installing..."
-				/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-			else
-				useless_action_message "Homebrew is already installed!"
-			fi
-			brew install node
-		#! Implement auto download of NodeJS for Windows
-		elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
-			# choco install nodejs
-			handle_error "Windows is not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
-		else
-			handle_error "Operating system not supported for automatic Node.js installation.${CARRIAGE_RETURN}Please install Node.js manually from https://nodejs.org/"
-		fi
-
-		if ! command -v node &> /dev/null; then
-			handle_error "Node.js installation failed. Please install it manually."
-		fi
-
-		info_message "Node.js installed successfully."
+		warning_message "Node.js is either not installed or not configured correctly."
+		handle_error "Please install Node.js from https://nodejs.org/ or configure it properly before using Minifier Tools again."
 	else
-		useless_action_message "Node.js is already installed!"
+		useless_action_message "Node.js is installed and ready!"
 	fi
 	carriage_return_message
 }
