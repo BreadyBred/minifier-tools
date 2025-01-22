@@ -54,7 +54,7 @@ check_tool "uglifyjs" "UglifyJS" "sudo npm install -g uglify-js"
 
 # Minification process
 info_message "Starting minification..."
-uglifyjs "$FILE_NAME" -o "$FILE_NAME" --compress --mangle
+uglifyjs "$FILE_NAME" -o "$FILE_NAME" --compress --mangle toplevel
 
 if [ $? -eq 0 ]; then
 	success_message "'$FILE_BASE' has been minified successfully."

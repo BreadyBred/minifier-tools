@@ -103,7 +103,7 @@ minify_files() {
         case "$file_type" in
             js)
                 info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
-                uglifyjs "$INPUT_FILE" -o "$OUTPUT_FILE" --compress --mangle
+                uglifyjs "$INPUT_FILE" -o "$OUTPUT_FILE" --compress --mangle toplevel
                 ;;
             css)
                 info_message "Minifying '$BASE_NAME' -> '$OUTPUT_BASE_NAME'..."
