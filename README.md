@@ -40,7 +40,7 @@ Additional Features:
 
 ## Getting Started
 
-Head over to the GitHub repository to download Minifier Tools and get started by launching `minifier-tools.exe`
+Head over to the GitHub repository to download Minifier Tools and get started by launching `minifier_tools.exe`
 
 ### Prerequisites
 
@@ -84,7 +84,7 @@ python --version
 git clone https://github.com/BreadyBred/minifier-tools.git
 cd minifier-tools
 ```
-2. That's it! You're ready to go, start `minifier-tools.exe` to start using the Standalone version or start setting up the postbuild tool with the quick guid in [Usage](#usage).
+2. That's it! You're ready to go, start `minifier_tools.exe` to start using the Standalone version or start setting up the postbuild tool with the quick guid in [Usage](#usage).
 
 ### Usage
 
